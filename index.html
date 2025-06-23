@@ -1,0 +1,221 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Realistic Calculator</title>
+  <style>
+    * {
+      box-sizing: border-box;
+    }
+
+    body {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      height: 100vh;
+      background: linear-gradient(135deg, #ffe0e0, #ffc2c2);
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+    }
+
+    .calculator {
+      background-color: #fff0f0;
+      border-radius: 20px;
+      padding: 25px;
+      box-shadow: 0 20px 50px rgba(255, 102, 153, 0.5);
+      width: 320px;
+      border: 2px solid #333;
+      position: relative;
+    }
+
+    .display {
+      width: 100%;
+      height: 60px;
+      font-size: 2rem;
+      text-align: right;
+      padding: 10px;
+      border: 2px solid #333;
+      background-color: #e09ac9;
+      margin-bottom: 20px;
+      border-radius: 10px;
+      color: #333;
+    }
+
+    .buttons {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 10px;
+    }
+
+    .buttons button {
+      padding: 20px;
+      font-size: 1.1rem;
+      border: 2px solid #333;
+      border-radius: 12px;
+      cursor: pointer;
+      background-color: #fca8d5;
+      box-shadow: 0 6px 12px rgba(249, 114, 206, 0.5);
+      transition: all 0.2s ease;
+    }
+
+    .buttons button:hover {
+      background-color: #f199f9;
+      transform: translateY(-2px);
+      box-shadow: 0 8px 16px rgba(252, 93, 241, 0.6);
+    }
+
+    .buttons .equal {
+      background-color: #ff66db;
+      color: white;
+    }
+
+    .buttons .clear {
+      background-color: #ff99fc;
+    }
+
+    .switch-container {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 15px;
+    }
+
+    .switch {
+      position: relative;
+      display: inline-block;
+      width: 60px;
+      height: 34px;
+    }
+
+    .switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .slider:before {
+      position: absolute;
+      content: "";
+      height: 26px;
+      width: 26px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .slider {
+      background-color: #f99999;
+    }
+
+    input:checked + .slider:before {
+      transform: translateX(26px);
+    }
+  </style>
+</head>
+<body>
+
+<div class="calculator">
+  <div class="switch-container">
+    <label class="switch">
+      <input type="checkbox" id="powerSwitch" checked>
+      <span class="slider"></span>
+    </label>
+  </div>
+  <input type="text" id="display" class="display" disabled />
+  <div class="buttons">
+    <button onclick="appendValue('7')">7</button>
+    <button onclick="appendValue('8')">8</button>
+    <button onclick="appendValue('9')">9</button>
+    <button onclick="appendValue('/')">÷</button>
+
+    <button onclick="appendValue('4')">4</button>
+    <button onclick="appendValue('5')">5</button>
+    <button onclick="appendValue('6')">6</button>
+    <button onclick="appendValue('*')">×</button>
+
+    <button onclick="appendValue('1')">1</button>
+    <button onclick="appendValue('2')">2</button>
+    <button onclick="appendValue('3')">3</button>
+    <button onclick="appendValue('-')">−</button>
+
+    <button onclick="appendValue('0')">0</button>
+    <button onclick="appendValue('.')">.</button>
+    <button onclick="calculate()" class="equal">=</button>
+    <button onclick="appendValue('+')">+</button>
+
+    <button onclick="appendValue('(')">(</button>
+    <button onclick="appendValue(')')">)</button>
+    <button onclick="clearDisplay()" class="clear">C</button>
+    <button onclick="deleteLast()">←</button>
+  </div>
+</div>
+
+<script>
+  const display = document.getElementById('display');
+  const powerSwitch = document.getElementById('powerSwitch');
+
+  function appendValue(value) {
+    if (!powerSwitch.checked) return;
+    if (display.value === 'OFF' || display.value === 'ON') display.value = '';
+    display.value += value;
+  }
+
+  function clearDisplay() {
+    if (!powerSwitch.checked) return;
+    display.value = '';
+  }
+
+  function deleteLast() {
+    if (!powerSwitch.checked) return;
+    display.value = display.value.slice(0, -1);
+  }
+
+  function calculate() {
+    if (!powerSwitch.checked) return;
+    try {
+      display.value = eval(display.value);
+    } catch {
+      display.value = 'Error';
+    }
+  }
+
+  document.addEventListener('keydown', function (event) {
+    if (!powerSwitch.checked) return;
+    const allowedKeys = '0123456789+-*/().';
+
+    if (allowedKeys.includes(event.key)) {
+      appendValue(event.key);
+    } else if (event.key === 'Enter') {
+      calculate();
+    } else if (event.key === 'Backspace') {
+      deleteLast();
+    } else if (event.key.toLowerCase() === 'c') {
+      clearDisplay();
+    }
+  });
+
+  powerSwitch.addEventListener('change', function () {
+    if (powerSwitch.checked) {
+      display.value = 'ON';
+      setTimeout(() => display.value = '', 1500);
+    } else {
+      display.value = 'OFF';
+      setTimeout(() => display.value = '', 1500);
+    }
+  });
+</script>
+
+</body>
+</html>
