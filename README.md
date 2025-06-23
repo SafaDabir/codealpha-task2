@@ -22,3 +22,4 @@ This project is ideal for beginners learning JavaScript DOM manipulation and UI 
 ⸻
 
 🚀 Live Demo
+(click here to view calculator) https://code-alpha-task3-pnjw.vercel.app/
